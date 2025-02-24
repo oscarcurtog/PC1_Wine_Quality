@@ -130,16 +130,15 @@ Codificación de la variable categórica type-wine.
 
 Se probaron varios modelos de machine learning para predecir la calidad del vino:
 Árboles de decisión -> Precisión: 58%
-Random Forest -> Precisión: 60%
-XGBoost -> Precisión: 62%
+Árboles de decisión con una varianza de +-1 -> Precisión: 92%
 Se compararon métricas de precisión y error.
 
 ### Resultados
 
-El mejor modelo alcanzó un 58% de precisión.
+El mejor modelo alcanzó un 92% de precisión.
 Se observó que las variables con mayor impacto en la calidad son...
 La calidad del vino parece estar influenciada por aspectos tanto físicos como químicos, pero también puede ser subjetiva.
-Para más detalles sobre el análisis, consulta el [notebook principal](notebooks/OCG_PC1_Wine_Quality.ipynb).
+Para más detalles sobre el análisis, consulta el [notebook principal](notebooks/G6_PC1_Wine_Quality.ipynb).
 
 ---
 
