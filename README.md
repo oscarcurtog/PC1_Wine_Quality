@@ -24,10 +24,9 @@ Este proyecto tiene como objetivo consolidar conocimientos sobre la manipulació
 ```plaintext
 ├── data/                   # Datos originales y procesados
 ├── notebooks/              # Notebooks con el código
-├── models/                 # Modelos entrenados guardados
 ├── requirements.txt        # Librerías necesarias para el entorno
-├── README.md               # Documentación del proyecto
-└── OCG_PC1_Wine_Quality.ipynb  # Notebook principal
+└──  README.md               # Documentación del proyecto
+
 
 
 ## 2. Instalación y creación del entorno
