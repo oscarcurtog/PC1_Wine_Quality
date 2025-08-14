@@ -6,7 +6,7 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-Este proyecto tiene como objetivo consolidar conocimientos sobre la manipulación de datos con Pandas, el manejo de bases de datos relacionales (SQLite), la preparación de los datos para una posible inserción en bases de datos no relacionales (MongoDB) y el estudio de patrones del dataset para generar un modelo capaz de predecir la calidad del vino
+This project aims to consolidate knowledge of data manipulation with Pandas; working with relational databases (SQLite); preparing data for potential insertion into non-relational databases (MongoDB); and analyzing patterns in the dataset to build a model capable of predicting wine quality.
 
 ---
 
