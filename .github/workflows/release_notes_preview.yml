@@ -15,6 +15,16 @@ concurrency:
 jobs:
   preview:
     runs-on: ubuntu-latest
+
+    # ⬇️ AÑADIDO: secretos para AWS y Bedrock disponibles en todos los steps del job
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}   # quita esta línea si no usas credenciales temporales
+      BEDROCK_MODEL_ID: ${{ secrets.BEDROCK_MODEL_ID }}
+
     steps:
       - name: Checkout PR repo (this repo)
         uses: actions/checkout@v4
@@ -46,6 +56,7 @@ jobs:
           pip install -r agent/requirements.txt
 
       - name: Generate preview comment
+        # ⬇️ GITHUB_TOKEN lo pasamos aquí (lo provee GitHub automáticamente)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: agent
