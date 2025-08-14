@@ -1,0 +1,48 @@
+name: Release Notes Preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: release-notes-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Restore cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/release_notes
+          key: release-notes-${{ github.event.pull_request.number }}-${{ github.sha }}
+          restore-keys: |
+            release-notes-${{ github.event.pull_request.number }}-
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate preview comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m agents.release_notes_agent generate \
+            --owner "${{ github.event.pull_request.base.repo.owner.login }}" \
+            --repo "${{ github.event.pull_request.base.repo.name }}" \
+            --pr ${{ github.event.pull_request.number }} \
+            --single-chunk --preview
