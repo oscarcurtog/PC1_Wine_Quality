@@ -1,0 +1,55 @@
+name: Release Notes Publish
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  publish:
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/release-notes publish') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR repo (this repo)
+        uses: actions/checkout@v4
+
+      - name: Checkout agent repo
+        uses: actions/checkout@v4
+        with:
+          repository: oscarcurtog/release-note-agent
+          ref: main
+          path: agent
+          # token: ${{ secrets.AGENT_REPO_TOKEN }}  # solo si el agente es privado
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Restore cache (agent/.cache)
+        uses: actions/cache@v4
+        with:
+          path: agent/.cache/release_notes
+          key: release-notes-${{ github.event.issue.number }}-${{ github.sha }}
+          restore-keys: |
+            release-notes-${{ github.event.issue.number }}-
+
+      - name: Install deps from agent repo
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r agent/requirements.txt
+
+      - name: Handle publish command
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: agent
+        run: |
+          python -m agents.release_notes_agent handle-comment \
+            --owner "${{ github.repository_owner }}" \
+            --repo  "${{ github.event.repository.name }}" \
+            --pr    ${{ github.event.issue.number }} \
+            --comment-id ${{ github.event.comment.id }}
