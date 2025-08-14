@@ -9,10 +9,24 @@ permissions:
   pull-requests: write
   issues: write
 
+concurrency:
+  group: release-notes-publish-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
 jobs:
   publish:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/release-notes publish') }}
     runs-on: ubuntu-latest
+
+    # 👇 Carga los secrets de AWS y Bedrock para que el agente pueda regenerar si hace falta
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}   # déjalo si tus credenciales son temporales
+      BEDROCK_MODEL_ID: ${{ secrets.BEDROCK_MODEL_ID }}
+
     steps:
       - name: Checkout PR repo (this repo)
         uses: actions/checkout@v4
@@ -45,6 +59,7 @@ jobs:
 
       - name: Handle publish command
         env:
+          # GITHUB_TOKEN solo donde hace falta (para leer/escribir comentarios)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: agent
         run: |
